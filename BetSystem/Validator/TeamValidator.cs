@@ -1,5 +1,4 @@
 ﻿using BetSystem.Contract;
-using BetSystem.Model;
 using FluentValidation;
 
 namespace BetSystem.Validators

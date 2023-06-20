@@ -1,6 +1,5 @@
 ﻿using BetSystem.BetSystemDbContext;
 using BetSystem.Model;
-using System.Runtime.CompilerServices;
 
 namespace BetSystem.Contract.BusinnessLogic
 {
@@ -36,7 +35,7 @@ namespace BetSystem.Contract.BusinnessLogic
         public List<TeamDto> GetAllTeams()
         {
             return _dbContext.Teams.Select(x => new TeamDto
-            {   
+            {
                 Id = x.Id,
                 Name = x.Name
             }).ToList();
@@ -47,24 +46,24 @@ namespace BetSystem.Contract.BusinnessLogic
             var team = _dbContext.Teams.FirstOrDefault(x => x.Id == id);
             if (team == null) return null;
             return new TeamDto
-            { Id = team.Id,
-              Name = team.Name };
-
+            {
+                Id = team.Id,
+                Name = team.Name
+            };
         }
 
-        public void  DeleteTeamById(int id)
+        public void DeleteTeamById(int id)
         {
-            var team = _dbContext.Teams.FirstOrDefault(x=>x.Id == id);
+            var team = _dbContext.Teams.FirstOrDefault(x => x.Id == id);
             _dbContext.Teams.Remove(team);
-            _dbContext.SaveChanges(); 
+            _dbContext.SaveChanges();
         }
 
         public void PutTeam(int id, TeamDto teamDto)
         {
-            var team = _dbContext.Teams.FirstOrDefault(x=> x.Id == id);
+            var team = _dbContext.Teams.FirstOrDefault(x => x.Id == id);
             team.Name = teamDto.Name;
             _dbContext.SaveChanges();
-            
         }
     }
 }

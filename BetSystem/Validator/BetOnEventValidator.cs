@@ -1,5 +1,4 @@
 ﻿using BetSystem.Contract;
-using BetSystem.Model;
 using FluentValidation;
 
 namespace BetSystem.Validators
@@ -8,7 +7,7 @@ namespace BetSystem.Validators
     {
         public BetOnEventValidator()
         {
-            
+
             RuleFor(x => x.BetOnResult).IsInEnum().WithMessage("Put 0-Win or 1-Lose or 2-Draw");
             RuleFor(x => x.Amount).NotNull();
             RuleFor(x => x.Interest).NotNull();
