@@ -44,6 +44,8 @@ namespace BetSystem.Endpoint
 
             if (!result.IsValid) return Results.ValidationProblem(result.ToDictionary());
             if (service.GetById(id) == null) Results.NotFound(id);
+            if (service.GetById(eventResultDto.TeamId) == null) return Results.BadRequest("Team Not Found");
+
             service.AddResultToSportEvent(id, eventResultDto);
 
             return Results.Ok();
@@ -66,6 +68,8 @@ namespace BetSystem.Endpoint
             {
                 return Results.ValidationProblem(result.ToDictionary());
             }
+            if (service.GetById(betOnEventDto.TeamId) == null) return Results.BadRequest("Team Not Found");
+            if (service.GetById(betOnEventDto.EventId) == null) return Results.BadRequest("Event Not Found");
 
             service.AddBetToSportEvent( betOnEventDto);
             return Results.Created($"/BetOnEvent/{betOnEventDto.Id}", betOnEventDto);
@@ -83,9 +87,7 @@ namespace BetSystem.Endpoint
 
         public static IResult PostTeamToSportEvent(int id, IdRequestDto idRequestDto, IValidator<IdRequestDto> validator, [FromServices] ISportEventService service, [FromServices] ITeamService teamService)
         {
-            var sportEvent = service.GetById(id);
-
-            if (sportEvent == null) return Results.NotFound();
+            if (service.GetById(id) == null) return Results.NotFound();
             var result = validator.Validate(idRequestDto);
 
             if (!result.IsValid) return Results.ValidationProblem(result.ToDictionary());
@@ -117,12 +119,20 @@ namespace BetSystem.Endpoint
 
         private static IResult DeleteById(int id, [FromServices] ISportEventService service)
         {
+            if (service.GetById(id) == null) return Results.NotFound();
+
             service.DeleteById(id);
             return Results.Ok(id);
         }
 
-        private static IResult PutSportEvent(int id, SportEventDto sportEventDto, [FromServices] ISportEventService service)
+        private static IResult PutSportEvent(int id, SportEventDto sportEventDto, IValidator<SportEventDto> validator, [FromServices] ISportEventService service)
         {
+            if (service.GetById(id) == null) return Results.NotFound();
+
+
+            var result = validator.Validate(sportEventDto);
+            if (!result.IsValid) return Results.ValidationProblem(result.ToDictionary());
+
             service.PutSportEvent(id, sportEventDto);
             return Results.NoContent();
         }

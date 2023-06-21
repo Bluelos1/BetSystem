@@ -2,6 +2,7 @@
 using BetSystem.Contract.BusinnessLogic;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace BetSystem.Endpoint
 {
@@ -47,8 +48,16 @@ namespace BetSystem.Endpoint
 
         }
 
-        private static IResult PutTeam(int id, TeamDto teamDto, [FromServices] ITeamService service)
+        private static IResult PutTeam(int id, IValidator<TeamDto> validator, TeamDto teamDto, [FromServices] ITeamService service)
         {
+            var result = validator.Validate(teamDto);
+            if (!result.IsValid)
+            {
+                return Results.ValidationProblem(result.ToDictionary());
+            }
+            if (service.GetTeamById(id) == null) return Results.NotFound(id);
+
+
             service.PutTeam(id, teamDto);
             return Results.NoContent();
         }
