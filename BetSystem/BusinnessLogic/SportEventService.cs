@@ -150,6 +150,7 @@ namespace BetSystem.Contract.BusinnessLogic
                     BetOnResult = x.BetOnResult,
                 })
                 .ToList();
+            
         }
 
         public void PutSportEvent(int id, SportEventDto sportEventDto)

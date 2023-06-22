@@ -2,6 +2,7 @@ using BetSystem.BetSystemDbContext;
 using BetSystem.Contract;
 using BetSystem.Contract.BusinnessLogic;
 using BetSystem.Endpoint;
+using BetSystem.Middlewares;
 using BetSystem.Validator;
 using BetSystem.Validators;
 using FluentValidation;
@@ -30,10 +31,15 @@ internal class Program
         builder.Services.AddScoped<IValidator<SportEventDto>, SportEventValidator>();
         builder.Services.AddScoped<IValidator<IdRequestDto>, IdRequestValidator>();
 
+        builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
+
+
 
 
 
         var app = builder.Build();
+
+        
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -43,8 +49,7 @@ internal class Program
         }
         app.UseRouting();
 
-
-
+        app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 
         app.AddBetOnEventMapping();

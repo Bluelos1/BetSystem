@@ -8,6 +8,7 @@ namespace BetSystem.Validators
         public TeamValidator()
         {
             RuleFor(x => x.Name).NotEmpty();
+
         }
     }
 }
