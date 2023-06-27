@@ -18,8 +18,10 @@ internal class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-        builder.Services.AddDbContext<BetDbContext>(o => o.UseInMemoryDatabase("Db"));
-        builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddDbContext<BetDbContext>(options =>
+            options.UseNpgsql(connectionString)); builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
         builder.Services.AddScoped<IBetOnEventService, BetOnEventService>();
         builder.Services.AddScoped<ISportEventService, SportEventService>();
@@ -29,9 +31,13 @@ internal class Program
         builder.Services.AddScoped<IValidator<TeamDto>, TeamValidator>();
         builder.Services.AddScoped<IValidator<EventResultDto>, EventResultValidator>();
         builder.Services.AddScoped<IValidator<SportEventDto>, SportEventValidator>();
+
         builder.Services.AddScoped<IValidator<IdRequestDto>, IdRequestValidator>();
 
         builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
+
+        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
 
 
 
