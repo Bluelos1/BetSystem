@@ -1,11 +1,9 @@
-﻿namespace BetSystem.Contract.BusinnessLogic
+﻿namespace BetSystem.Contract
 {
-    public record TeamStats
+    public record StatsDto
     {
-        public string TeamName { get; set; }
         public int WinCount { get; set; }
         public int LoseCount { get; set; }
         public int DrawCount { get; set; }
     }
-
 }

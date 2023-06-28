@@ -1,4 +1,5 @@
 ﻿using BetSystem.Model;
+using Microsoft.EntityFrameworkCore.Update.Internal;
 
 namespace BetSystem.Contract
 {
@@ -9,5 +10,13 @@ namespace BetSystem.Contract
         public int Amount { get; set; }
         public int Interest { get; set; }
         public int AmountToPay { get; set; }
+        public int TeamId { get; set; }
+        public int EventId { get; set; }
+
+        public void UpdateAmountToPay()
+        {
+            AmountToPay = Amount * Interest;
+        }
+       
     }
 }
