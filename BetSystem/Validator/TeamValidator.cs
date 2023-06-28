@@ -1,5 +1,4 @@
 ﻿using BetSystem.Contract;
-using BetSystem.Model;
 using FluentValidation;
 
 namespace BetSystem.Validators
@@ -9,6 +8,7 @@ namespace BetSystem.Validators
         public TeamValidator()
         {
             RuleFor(x => x.Name).NotEmpty();
+
         }
     }
 }

@@ -1,9 +1,8 @@
 using BetSystem.BetSystemDbContext;
-using BetSystem.BusinnessLogic;
 using BetSystem.Contract;
 using BetSystem.Contract.BusinnessLogic;
 using BetSystem.Endpoint;
-using BetSystem.Model;
+using BetSystem.Middlewares;
 using BetSystem.Validator;
 using BetSystem.Validators;
 using FluentValidation;
@@ -23,16 +22,24 @@ internal class Program
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
         builder.Services.AddScoped<IBetOnEventService, BetOnEventService>();
-        builder.Services.AddScoped<IEventResultService, EventResultService>();
         builder.Services.AddScoped<ISportEventService, SportEventService>();
         builder.Services.AddScoped<ITeamService, TeamService>();
 
         builder.Services.AddScoped<IValidator<BetOnEventDto>, BetOnEventValidator>();
         builder.Services.AddScoped<IValidator<TeamDto>, TeamValidator>();
         builder.Services.AddScoped<IValidator<EventResultDto>, EventResultValidator>();
-        builder.Services.AddScoped<IValidator<SportEventDto>,SportEventValidator>();
+        builder.Services.AddScoped<IValidator<SportEventDto>, SportEventValidator>();
+        builder.Services.AddScoped<IValidator<IdRequestDto>, IdRequestValidator>();
+
+        builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
+
+
+
+
 
         var app = builder.Build();
+
+        
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -42,12 +49,10 @@ internal class Program
         }
         app.UseRouting();
 
-
-        
+        app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 
         app.AddBetOnEventMapping();
-        app.AddEventResultMapping();
         app.AddSportEventMapping();
         app.AddTeamMapping();
 

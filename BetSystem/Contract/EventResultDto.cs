@@ -6,5 +6,7 @@ namespace BetSystem.Contract
     {
         public int Id { get; set; }
         public BetResult BetOnResult { get; set; }
+        public int TeamId { get; set; }
+
     }
 }
