@@ -18,43 +18,43 @@ namespace BetSystem.Endpoint
 
         }
 
-        private static IResult GetStatistics([FromServices] IBetOnEventService service)
+        private static IResult GetStatistics([FromServices] IBetOnEventService betOnEventService)
         {
-            return Results.Ok(service.GetStatistics());
+            return Results.Ok(betOnEventService.GetStatistics());
         }
 
        
 
-        private static IResult GetAllBets([FromServices] IBetOnEventService service)
+        private static IResult GetAllBets([FromServices] IBetOnEventService betOnEventService)
         {
-            return Results.Ok(service.GetAllBets());
+            return Results.Ok(betOnEventService.GetAllBets());
         }
 
-        private static IResult GetById(int id, [FromServices] IBetOnEventService service)
+        private static IResult GetById(int id, [FromServices] IBetOnEventService betOnEventService)
         {
-            var result = service.GetBetOnEventById(id);
+            var result = betOnEventService.GetBetOnEventById(id);
             if (result == null) return Results.NotFound(id);
             return Results.Ok(result);
         }
 
-        private static IResult DeleteById(int id, [FromServices] IBetOnEventService service)
+        private static IResult DeleteById(int id, [FromServices] IBetOnEventService betOnEventService)
         {
-            if (service.GetBetOnEventById(id) == null) return Results.NotFound();
+            if (betOnEventService.GetBetOnEventById(id) == null) return Results.NotFound();
 
-            service.DeleteBetOnEvent(id);
+            betOnEventService.DeleteBetOnEvent(id);
             return Results.Ok(id);
         }
 
-        private static IResult PutBet(int id, BetOnEventDto betOnEventDto, IValidator<BetOnEventDto> validator, [FromServices] IBetOnEventService service)
+        private static IResult PutBet(int id, BetOnEventDto betOnEventDto, IValidator<BetOnEventDto> validator, [FromServices] IBetOnEventService betOnEventService)
         {
-            if (service.GetBetOnEventById(id) == null) return Results.NotFound();
+            if (betOnEventService.GetBetOnEventById(id) == null) return Results.NotFound();
             var result = validator.Validate(betOnEventDto);
             if (!result.IsValid)
             {
                 return Results.ValidationProblem(result.ToDictionary());
             }
 
-            service.PutBetOnEvent(id, betOnEventDto);
+            betOnEventService.PutBetOnEvent(id, betOnEventDto);
             return Results.NoContent();
         }
 

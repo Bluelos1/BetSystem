@@ -10,10 +10,5 @@
         public int Amount { get; set; }
         public int Interest { get; set; }
         public int AmountToPay { get; set; }
-
-        internal void UpdateAmountToPay(EventResult eventResult)
-        {
-            AmountToPay = Amount * Interest;
-        }
     }
 }

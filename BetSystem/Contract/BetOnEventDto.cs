@@ -12,11 +12,5 @@ namespace BetSystem.Contract
         public int AmountToPay { get; set; }
         public int TeamId { get; set; }
         public int EventId { get; set; }
-
-        public void UpdateAmountToPay()
-        {
-            AmountToPay = Amount * Interest;
-        }
-       
     }
 }

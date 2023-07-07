@@ -1,6 +1,8 @@
 ﻿using BetSystem.BetSystemDbContext;
 using BetSystem.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Web.Http;
 
 namespace BetSystem.Contract.BusinnessLogic
 {
@@ -23,6 +25,7 @@ namespace BetSystem.Contract.BusinnessLogic
     public class SportEventService : ISportEventService
     {
         public readonly BetDbContext _dbContext;
+        
 
         public SportEventService(BetDbContext dbContext)
         {
@@ -54,7 +57,10 @@ namespace BetSystem.Contract.BusinnessLogic
         public SportEventDto GetById(int id)
         {
             var sportEvent = _dbContext.Events.FirstOrDefault(x => x.Id == id);
-            if (sportEvent == null) { return null; }
+            if (sportEvent == null) {
+                //throw new HttpResponseException(HttpStatusCode.NotFound); 
+                throw new ArgumentNullException(nameof(sportEvent));
+            }
             return new SportEventDto
             {
                 Id = sportEvent.Id,
@@ -68,9 +74,9 @@ namespace BetSystem.Contract.BusinnessLogic
             _dbContext.SaveChanges();
         }
 
-        public void AddTeamToSportEvent(int id, IdRequestDto idRequestDto)
+        public void AddTeamToSportEvent(int id, IdRequestDto idRequest)
         {
-            var team = _dbContext.Teams.FirstOrDefault(x => x.Id == idRequestDto.Id);
+            var team = _dbContext.Teams.FirstOrDefault(x => x.Id == idRequest.Id);
             _dbContext
                 .Events.FirstOrDefault(x => x.Id == id)
                 .Teams.Add(team);
@@ -129,13 +135,25 @@ namespace BetSystem.Contract.BusinnessLogic
                 Team = _dbContext.Teams.First(x => x.Id == eventResultDto.TeamId),
                 Event = _dbContext.Events.First(x => x.Id == id)
             };
-            _dbContext.Bets
+            _dbContext.Events.First(x => x.Id == id).EventResults = new List<EventResult>();
+
+            var bets = _dbContext.Bets
                 .Include(x => x.Team)
                 .Where(x => x.Event.Id == id)
-                .ToList()
-                .ForEach(x => x.UpdateAmountToPay(eventResult));
+                .ToList();
+
+            foreach (var bet in bets)
+            {
+                UpdateAmountToPay(bet);
+            }
+
             _dbContext.Results.Add(eventResult);
             _dbContext.SaveChanges();
+        }
+
+        private void UpdateAmountToPay(BetOnEvent betOnEvent)
+        {
+            betOnEvent.AmountToPay = betOnEvent.Amount * betOnEvent.Interest;
         }
 
         public List<EventResultDto> GetResultsFromSportEvent(int id)
@@ -159,6 +177,6 @@ namespace BetSystem.Contract.BusinnessLogic
             sportEvent.Name = sportEventDto.Name;
             _dbContext.SaveChanges();
         }
-
+     
     }
 }

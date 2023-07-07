@@ -29,7 +29,7 @@ namespace BetSystem.Middlewares
                     Status = (int)HttpStatusCode.InternalServerError,
                     Type = "Server error",
                     Title = "Server error",
-                    Detail = "An internal serer has occurred"
+                    Detail = "An internal server has occurred"
                 };
 
                 var json = JsonSerializer.Serialize(problem);

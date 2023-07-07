@@ -17,48 +17,48 @@ namespace BetSystem.Endpoint
             app.MapPut("/Team/{id}", PutTeam);
         }
 
-        private static IResult PostTeam(IValidator<TeamDto> validator, TeamDto teamDto, [FromServices] ITeamService service)
+        private static IResult PostTeam(IValidator<TeamDto> validator, TeamDto teamDto, [FromServices] ITeamService teamService)
         {
             var result = validator.Validate(teamDto);
             if (!result.IsValid)
             {
                 return Results.ValidationProblem(result.ToDictionary());
             }
-            service.PostTeam(teamDto);
+            teamService.PostTeam(teamDto);
             return Results.Created($"/Team/{teamDto.Id}", teamDto);
         }
 
-        private static IResult GetAll([FromServices] ITeamService service)
+        private static IResult GetAll([FromServices] ITeamService teamService)
         {
-            return Results.Ok(service.GetAllTeams());
+            return Results.Ok(teamService.GetAllTeams());
         }
 
-        private static IResult GetById(int id, [FromServices] ITeamService service)
+        private static IResult GetById(int id, [FromServices] ITeamService teamService)
         {
-            var result = service.GetTeamById(id);
+            var result = teamService.GetTeamById(id);
             if (result == null) return Results.NotFound(id);
             return Results.Ok(result);
         }
 
-        private static IResult DeleteById(int id, [FromServices] ITeamService service)
+        private static IResult DeleteById(int id, [FromServices] ITeamService teamService)
         {
-            if (service.GetTeamById(id) == null) return Results.NotFound(id);
-            service.DeleteTeamById(id);
+            if (teamService.GetTeamById(id) == null) return Results.NotFound(id);
+            teamService.DeleteTeamById(id);
             return Results.Ok(id);
 
         }
 
-        private static IResult PutTeam(int id, IValidator<TeamDto> validator, TeamDto teamDto, [FromServices] ITeamService service)
+        private static IResult PutTeam(int id, IValidator<TeamDto> validator, TeamDto teamDto, [FromServices] ITeamService teamService)
         {
             var result = validator.Validate(teamDto);
             if (!result.IsValid)
             {
                 return Results.ValidationProblem(result.ToDictionary());
             }
-            if (service.GetTeamById(id) == null) return Results.NotFound(id);
+            if (teamService.GetTeamById(id) == null) return Results.NotFound(id);
 
 
-            service.PutTeam(id, teamDto);
+            teamService.PutTeam(id, teamDto);
             return Results.NoContent();
         }
     }
